@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    protected $connection = 'pia';
+    protected $connection= 'pia';
 
     /**
      * Run the migrations.
@@ -15,9 +15,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('collections', function (Blueprint $table) {
-            $table->string('creator')->nullable();
-        });
+         Schema::table('images', function (Blueprint $table) {
+            $table->string('license')->nullable();
+        });       
     }
 
     /**
@@ -27,8 +27,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('collections', function (Blueprint $table) {
-            $table->dropColumn('creator');
+        Schema::table('images', function (Blueprint $table) {
+            $table->dropColumn('license');
         });
     }
 };

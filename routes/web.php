@@ -117,6 +117,9 @@ Route::get('/import-old-restoration', function() {
                 'origin' => $s['attributes']['origin'],
             ]);
 
+            $aggregation->created_at = $s['attributes']['createdAt'];
+            $aggregation->save();
+
             $set_documents_url = 'https://pia-api.dhlab.unibas.ch/api/v1/sets/'.$s['id'].'/documents';
             $set_documents = json_decode(file_get_contents($set_documents_url), true);
 

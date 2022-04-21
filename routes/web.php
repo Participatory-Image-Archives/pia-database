@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Models\Aggregation;
 use App\Models\Collection;
+use App\Models\Document;
 use App\Models\Image;
 use App\Models\Note;
 
@@ -71,6 +73,62 @@ Route::get('/import-old-notes', function() {
                     'content' => $n['attributes']['content']
                 ]);
             }
+        }
+    }
+});
+
+Route::get('/import-old-documents', function() {
+    $url = 'https://pia-api.dhlab.unibas.ch/api/v1/documents';
+    $documents = json_decode(file_get_contents($url), true);
+
+    foreach ($documents['data'] as $key => $d) {
+        $document = Document::where('label', $d['attributes']['label'])->first();
+
+        if(!$document){
+            $document_collection_url = 'https://pia-api.dhlab.unibas.ch/api/v1/documents/'.$d['id'].'/collections';
+            $document_collection = json_decode(file_get_contents($document_collection_url), true);
+
+            if(count($document_collection['data']) > 0){
+                $collection = Collection::where('label', $document_collection['data'][0]['attributes']['label'])->first();
+                if($collection){
+                    $collection->documents()->create([
+                        'label' => $d['attributes']['label'],
+                        'file_name' => $d['attributes']['file_name'],
+                        'original_file_name' => $d['attributes']['original_file_name'],
+                        'base_path' => $d['attributes']['base_path']
+                    ]);
+                    
+                }
+            }
+        }
+    }
+});
+
+Route::get('/import-old-restoration', function() {
+    $url = 'https://pia-api.dhlab.unibas.ch/api/v1/sets';
+    $sets = json_decode(file_get_contents($url), true);
+
+    foreach ($sets['data'] as $key => $s) {
+        if($s['attributes']['deletedAt'] == null){
+            $aggregation = Aggregation::create([
+                'label' => $s['attributes']['label'],
+                'description' => $s['attributes']['description'],
+                'signatures' => $s['attributes']['signatures'],
+                'origin' => $s['attributes']['origin'],
+            ]);
+
+            $set_documents_url = 'https://pia-api.dhlab.unibas.ch/api/v1/sets/'.$s['id'].'/documents';
+            $set_documents = json_decode(file_get_contents($set_documents_url), true);
+
+
+            foreach ($set_documents['data'] as $key => $sd) {
+                $aggregation->documents()->create([
+                    'label' => $sd['attributes']['label'],
+                    'file_name' => $sd['attributes']['file_name'],
+                    'original_file_name' => $sd['attributes']['original_file_name'],
+                    'base_path' => $sd['attributes']['base_path']
+                ]);
+        }
         }
     }
 });

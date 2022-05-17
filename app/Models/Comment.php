@@ -16,7 +16,7 @@ class Comment extends Model
         'image_id',
         'collection_id',
         'album_id',
-        'agent_id',
+        'agent_id'
     ];
 
     public function image()

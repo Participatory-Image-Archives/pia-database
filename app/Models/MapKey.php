@@ -13,7 +13,10 @@ class MapKey extends Model
 
     protected $fillable = [
         'label',
-        'icon'
+        'icon',
+        'icon_file_name',
+        'original_icon_file_name',
+        'map_id'
     ];
 
     /* relations */

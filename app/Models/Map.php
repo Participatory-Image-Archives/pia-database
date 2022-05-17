@@ -13,6 +13,7 @@ class Map extends Model
 
     protected $fillable = [
         'label',
+        'description',
         'tiles',
         'origin'
     ];

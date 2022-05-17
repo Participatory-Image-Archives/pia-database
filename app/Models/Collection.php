@@ -22,6 +22,7 @@ class Collection extends Model
         'date_id',
     ];
 
+
     public function altLabels()
     {
         return $this->belongsToMany(AltLabel::Class);

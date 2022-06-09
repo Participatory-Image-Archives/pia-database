@@ -251,8 +251,6 @@ Route::get('/import-old-maps', function() {
 
 Route::get('/fix-comment-relations', function(){
 
-    print('hello');
-
     DB::connection('pia')->table('comment_image')->get()->each(function($entry, $i){
         $comment = Comment::find($entry->comment_id);
         if($comment->image_id == ''){
@@ -284,7 +282,5 @@ Route::get('/fix-comment-relations', function(){
             $comment->save();
         }
     });
-
-    print('bye');
 
 });
